@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "marketing"
+version = "0.1.0"
+description = ""
+authors = ["Daniel Fredriksen"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+selenium = "^4.8.0"
+pytest = "^7.2.1"
+python-env = "^1.0.0"
+slack-sdk = "^3.19.5"
+requests = "^2.28.2"
+python-dotenv = "^0.21.1"
+boto3 = "^1.26.64"
+jira = "^3.4.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths =[
+    "tests"
+]
