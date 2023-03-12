@@ -34,3 +34,11 @@ def create_opportunities(jira, jobs, project):
         issues += jira.create_issues(field_list=issue_list)
         sleep(1)
     return issues
+
+def get_new_opportunities(jira, start_at=0):
+    issues = jira.search_issues(
+        "project='MAR' AND issueType='Opportunity' and status='New Task'",
+        startAt=start_at
+    )
+
+    return issues

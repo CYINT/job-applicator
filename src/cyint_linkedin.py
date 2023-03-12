@@ -125,3 +125,14 @@ def parse_job_data(job):
             "company": None,
             "exception": e
         }
+
+def extract_description_from_url(driver, url):
+    driver.get(url)
+    sleep(2)
+    button = driver.find_element(by=By.XPATH, value="//span[text()='See more']")
+    button.click()
+    sleep(2)
+    description_container = driver.find_element(by=By.CSS_SELECTOR, value=".jobs-description-content__text")
+    return description_container.text
+
+    
