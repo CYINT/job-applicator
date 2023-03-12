@@ -42,3 +42,12 @@ def get_new_opportunities(jira, start_at=0):
     )
 
     return issues
+
+
+def get_prepared_opportunities(jira, start_at=0):
+    issues = jira.search_issues(
+        "project='MAR' AND issueType='Opportunity' and status='Eligible for Application'",
+        startAt=start_at
+    )
+
+    return issues
