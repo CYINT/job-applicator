@@ -1,7 +1,7 @@
 from src.cyint_dynamodb import initiate_dynamo_resource, insert_records, get_items, get_unprocessed_opportunities
 from src.cyint_linkedin import initialize_webdriver, open_homepage, sign_in, job_search
 from src.cyint_jira import authenticate_jira, create_opportunities
-from src.cyint_slack import talk_to_slack
+from src.cyint_slack import talk_to_slack, error_to_slack
 
 def connect_to_linkedin():
     driver = initialize_webdriver()
@@ -60,7 +60,7 @@ def harvest_opportunities():
         issues = create_jira_opportunities()
         talk_to_slack(f"I've gone ahead and created {len(issues)} opportunities in JIRA. Whew! That was a lot of work.")
     except Exception as e:
-        talk_to_slack(f"Oops! Something went wrong. Here is the exception I got: {str(e)}")    
+        error_to_slack(f"Oops! Something went wrong. Here is the exception I got: {str(e)}")    
         
     #shut_down()    
 

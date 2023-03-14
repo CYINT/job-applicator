@@ -1,6 +1,6 @@
 from src.cyint_jira import get_new_opportunities, authenticate_jira
-from src.cyint_slack import talk_to_slack
-from src.cyint_linkedin import extract_description_from_url, initialize_webdriver
+from src.cyint_slack import talk_to_slack, error_to_slack
+from src.cyint_linkedin import extract_description_from_url, initialize_webdriver, extract_hiring_manager
 from time import sleep
 
 def get_job_descriptions():
@@ -22,15 +22,21 @@ def get_job_descriptions():
         try:
             url = opportunity.get_field('customfield_10158')
             description = extract_description_from_url(driver, url)
-            opportunity.update({'description': description})
+            hiring_manager = extract_hiring_manager(driver)
+            opportunity.update({'description': f"Hiring Manager:{hiring_manager}\nDescription: {description}"})
             jira.transition_issue(opportunity, transition='Captured Job Description')
             success += 1
             if success % 25 == 0:
                 sleep(2)
         except Exception as ex:
-            talk_to_slack(f"I encountered a problem with opportunity {opportunity.key}. Error: {str(ex)}")
+            error_to_slack(f"I encountered a problem with opportunity {opportunity.key}. Error: {str(ex)}") 
             failure += 1
-
+            try:
+               jira.transition_issue(opportunity, transition='Encountered problem')
+               error_to_slack(f"Successfully transitioned {opportunity.key} to \"Requires Human\".") 
+            except Exception as ex2:
+               error_to_slack(f"Unable to transition opportunity {opportunity.key}. Error: {str(ex2)}") 
+            
     return [success, failure]
 
 if __name__ == "__main__":

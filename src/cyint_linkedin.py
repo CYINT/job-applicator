@@ -17,7 +17,7 @@ def initialize_webdriver():
     service = Service(executable_path=path_to_driver)
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument(f"user-data-dir={data_directory}") 
-    chrome_options.add_argument(f"window-size=2000,500")
+    chrome_options.add_argument(f"window-size=2000,1000")
     driver = webdriver.Chrome(service=service, options=chrome_options) 
     cookies = []
     if os.path.exists("cookies.pkl"):
@@ -128,11 +128,21 @@ def parse_job_data(job):
 
 def extract_description_from_url(driver, url):
     driver.get(url)
-    sleep(2)
+    driver.implicitly_wait(10)
     button = driver.find_element(by=By.XPATH, value="//span[text()='See more']")
     button.click()
     sleep(2)
     description_container = driver.find_element(by=By.CSS_SELECTOR, value=".jobs-description-content__text")
     return description_container.text
 
-    
+def extract_hiring_manager(driver):
+
+    try:
+        driver.implicity_wait(2)
+        return driver.find_elements(
+            by=By.CSS_SELECTOR, 
+            value = '.jobs-poster__name'
+        )[0].text
+    except:
+        return "Unknown"
+            
