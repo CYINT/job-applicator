@@ -457,7 +457,8 @@ def build_resume(
 {work['company']}""")
         p.add_run(f"""
 {work['dates']}""").italic = True
-        p.add_run(work['description'])
+        p.add_run(f"""
+{work['description']}""")
         
     document.add_heading("Education", level=1)
 
