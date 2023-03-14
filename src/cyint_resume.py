@@ -412,13 +412,14 @@ def build_resume(
     email, 
     calendly,
     linkedin, 
-    titles, 
+    title, 
     headline, 
     summary, 
     technical_skills, 
     work_history,
     education,
-    certifications
+    certifications,
+    filename
 ):
     
     document = Document()
@@ -447,7 +448,7 @@ def build_resume(
         p.add_run(f"{skill}: ").bold = True
         p.add_run(", ".join(technical_skills[skill]))
 
-    document.add_heading("Employment History (Last 10 years)", level=1)
+    document.add_heading("Work History (Last 10 years)", level=1)
 
     for work in work_history:
         p = document.add_paragraph('')
@@ -456,8 +457,7 @@ def build_resume(
 {work['company']}""")
         p.add_run(f"""
 {work['dates']}""").italic = True
-        p.add_run(f"""
-{", ".join(work['results'])}""")
+        p.add_run(work['description'])
         
     document.add_heading("Education", level=1)
 
@@ -477,5 +477,5 @@ def build_resume(
     document.add_paragraph("Served in support of Operation Iraqi Freedom III, and Operation Enduring Freedom VII \
         as an infantryman. Honorable discharge, receiving several medals and the rank of Sergeant")
 
-    document.save('demo.docx')
+    document.save(filename)
     return document
