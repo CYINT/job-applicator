@@ -2,8 +2,7 @@ from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-def build_template_document():
-
+def get_resume_data():
     first_name = "Daniel"
     last_name = "Fredriksen"
 
@@ -386,8 +385,46 @@ def build_template_document():
     certifications = f"Over 70+ certifications in data science, machine learning, and software engineering \
      available on Linked In at: {linkedin}"
 
+    return [
+        first_name, 
+        last_name, 
+        address, 
+        phone,
+        email,
+        calendly,
+        linkedin,
+        titles,
+        headline,
+        summary,
+        technical_skills,
+        work_history,
+        education,
+        certifications
+    ]
 
+
+def build_resume(
+    cover_letter,
+    first_name, 
+    last_name, 
+    address, 
+    phone, 
+    email, 
+    calendly,
+    linkedin, 
+    titles, 
+    headline, 
+    summary, 
+    technical_skills, 
+    work_history,
+    education,
+    certifications
+):
+    
     document = Document()
+
+    document.add_paragraph(cover_letter)
+    document.add_page_break()
 
     document.add_heading(f"{first_name} {last_name}", 0)
     
@@ -442,5 +479,3 @@ def build_template_document():
 
     document.save('demo.docx')
     return document
-
-build_template_document()
