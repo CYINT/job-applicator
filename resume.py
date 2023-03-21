@@ -70,8 +70,9 @@ def generate_resumes_for_opportunities():
                     sleep(1)
 
                 work['description'] = new_description
-                
-            filename = f"Daniel Fredriksen - {title.replace('.','')}.docx"
+
+            file_title = title.replace('.','').replace('/', '-').replace('\\','-')
+            filename = f"Daniel Fredriksen - {file_title}.docx"
 
             build_resume(
                 cover_letter,

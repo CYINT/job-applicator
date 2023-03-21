@@ -182,7 +182,7 @@ def get_resume_data():
     {
         "company": "CYINT LLC",
         "title": "Chief Data Scientist",
-        "dates": "4/2007 - Present",
+        "dates": "1/2021 - Present",
         "description": "Consulting for various data science and machine learning projects, including high profile customers such as the NYC Office of the Chief Medical Examiner, the Veteran's Health Administration, Toyota, Levis, DocuSign, CVS Health, TC Energy, Experian, Expedia, and others",
         "skills": [technical_skills[skill] for skill in technical_skills.keys()],
         "results": [
