@@ -18,7 +18,7 @@ def chat_completion(messages, max_tokens = 1000, temperature = 0.7, top_p=1, fre
     
         try:
             result = openai.ChatCompletion.create(
-                model = 'gpt-3.5-turbo',
+                model = 'gpt-4',
                 messages=messages,
                 max_tokens=max_tokens,
                 temperature=temperature,
