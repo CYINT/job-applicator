@@ -1,2 +1,2 @@
-# marketing
-Automation for marketing efforts
+# job-applicator
+Automation for applying to jobs.
