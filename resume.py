@@ -4,6 +4,7 @@ from src.cyint_openai import gpt_parse_summary, gpt_parse_salary, initialize_ope
 from src.cyint_resume import get_resume_data, build_resume
 from time import sleep
 import os
+import re
 
 def generate_resumes_for_opportunities():
     jira = authenticate_jira()
@@ -71,9 +72,9 @@ def generate_resumes_for_opportunities():
 
                 work['description'] = new_description
 
-            file_title = title.replace('.','').replace('/', '-').replace('\\','-').replace('"', '')
-            filename = f"Daniel Fredriksen - {file_title}.docx"
-
+            filename = f"Daniel Fredriksen - {title}"
+            filename = f"{get_valid_filename(filename)}.docx"
+            
             build_resume(
                 cover_letter,
                 first_name, 
@@ -103,6 +104,11 @@ def generate_resumes_for_opportunities():
             error_to_slack(f"I encountered a problem with preprocessing opportunity {opportunity.key}. Error: {str(ex)}")
 
     return [success, failure, cancel]
+
+def get_valid_filename(s): 
+    s = str(s).strip().replace(' ', '_') 
+    return re.sub(r'(?u)[^-\w.]', '', s) 
+
 if __name__ == "__main__":
     talk_to_slack(f"I'm going to write some optimized resumes for opportunities in the backlog.")
     success, failure, cancel = generate_resumes_for_opportunities()
