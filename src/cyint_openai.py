@@ -45,7 +45,7 @@ def gpt_parse_summary(description):
 
 
 def gpt_generate_coverletter(summary, experience):
-    prompt = f"Generate a cover letter for the job summary provided by the user. Add a sentance about scheduling time for an interview via Calendly. {experience}."
+    prompt = f"Generate a cover letter for the job summary provided by the user. Add a sentance about scheduling time for an interview via Calendly. Do not include placeholders. {experience}."
 
     messages = [{"role":"system", "content": prompt}, 
         {"role": "user", "content": summary}
