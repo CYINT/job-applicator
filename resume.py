@@ -37,7 +37,7 @@ def generate_resumes_for_opportunities():
 
             opportunity.update(fields)
 
-            if max_salary is not None and int(max_salary) < 150000:
+            if max_salary is not None and int(max_salary) < 120000:
                 cancel += 1
                 jira.transition_issue(opportunity, 'Canceled')
                 continue
@@ -52,7 +52,7 @@ def generate_resumes_for_opportunities():
             job_info = f"{opportunity.fields.summary}: {summary}"
             
             cover_letter = gpt_generate_coverletter(job_info, experience)
-
+            cover_letter = re.sub(r"/\[.*\]\n?/", "", cover_letter)
             title = gpt_choose_best_title(job_info, titles, headline)
             new_headline = f"Expert {title}"
             pitch = gpt_rewrite_pitch(summary, pitch)
