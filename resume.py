@@ -17,42 +17,18 @@ def generate_resumes_for_opportunities():
         try:
             description = opportunity.fields.description
             summary = gpt_parse_summary(description)
-            salary = gpt_parse_salary(summary)
-            salaries = salary.split(";")
-
-            try:
-                min_salary = int(salaries[0]) if salaries[0].lower() != 'unknown'else None
-                max_salary = int(salaries[1]) if salaries[1].lower() != 'unknown'else None
-            except:
-                min_salary = None
-                max_salary = None
-            fields = {}
             
-            if min_salary != None:
-                fields['customfield_10207'] = int(min_salary)
-            if max_salary != None:
-                fields['customfield_10208'] = int(max_salary)
-            
-            fields['customfield_10209'] = summary
-
-            opportunity.update(fields)
-
-            if max_salary is not None and int(max_salary) < 120000:
-                cancel += 1
-                jira.transition_issue(opportunity, 'Canceled')
-                continue
-            
- 
             first_name, last_name, address, phone, email, calendly,\
             linkedin, titles, headline, pitch, technical_skills, work_history,\
             education, certifications = get_resume_data()
             
+
             experience = f"Applicant's Name:{first_name} {last_name}, Applicant's Address: {address}, Applicant's phone: {phone}, Applicant's Email: {email}, Applicant's Calendly: {calendly}, Applicant's LinkedIn: {linkedin}, Applicant's Background: {summary}"
             
             job_info = f"{opportunity.fields.summary}: {summary}"
             
             cover_letter = gpt_generate_coverletter(job_info, experience)
-            cover_letter = re.sub(r"/\[.*\]\n?/", "", cover_letter)
+            cover_letter = re.sub(r'\[.*?\]\n?', '', cover_letter)
             title = gpt_choose_best_title(job_info, titles, headline)
             new_headline = f"Expert {title}"
             pitch = gpt_rewrite_pitch(summary, pitch)
