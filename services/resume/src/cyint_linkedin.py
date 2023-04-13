@@ -35,7 +35,6 @@ def sign_in(driver):
 
     username = os.environ["LINKEDIN_USER"]
     password = os.environ["LINKEDIN_PASSWORD"]
-    
     username_field = driver.find_element(by=By.NAME, value="session_key")
     username_field.click()
     username_field.clear()
@@ -46,8 +45,8 @@ def sign_in(driver):
     password_field.send_keys(password)    
     action = ActionChains(driver)  
     action.move_to_element(password_field)
-    button = driver.find_element(by=By.CLASS_NAME, value="sign-in-form__submit-btn--full-width")
-    button.click()
+    button = driver.find_element(by=By.CLASS_NAME, value="sign-in-form__submit-button")
+    #button.click()
 
 def job_search(driver, alert):
     driver.get('https://www.linkedin.com/jobs/jam/')
@@ -94,12 +93,13 @@ def extract_jobs_from_page(driver, job_counter = 0):
         var elements = document.querySelectorAll('.job-card-container');
         elements[elements.length-1].scrollIntoView();
     """)
+        sleep(1)
         job_list = driver.find_elements(by=By.CSS_SELECTOR, value=".job-card-container")
         
     jobs = [parse_job_data(job) for job in job_list]
     jobs = [job for job in jobs if job['title'] != None]
 
-    sleep(2)
+    sleep(5)
     return jobs
 
 
@@ -109,10 +109,7 @@ def parse_job_data(job):
         title_container = job.find_element(by=By.CSS_SELECTOR, value=".job-card-list__title")
         title = title_container.text
         path = title_container.get_attribute('href')
-        try:
-            company = job.find_element(by=By.CSS_SELECTOR, value=".job-card-container__primary-description").text
-        except:
-            company = None
+        company = job.find_element(by=By.CSS_SELECTOR, value=".job-card-container__company-name").text
         return {
             "job_id": job_id,
             "title": title,

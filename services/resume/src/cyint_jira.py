@@ -27,7 +27,7 @@ def create_opportunities(jira, jobs, project):
             "description": f"{job['company']} - {job['title']}",
             "issuetype": { "name": "Opportunity" },
             "customfield_10157": job['title'],
-            "customfield_10158":  job['path'][:job["path"].index('?')],
+            "customfield_10158": job['path'],
             "customfield_10159": 0
         } for job in jobs[batch*50:50*(batch+1)]] 
         
