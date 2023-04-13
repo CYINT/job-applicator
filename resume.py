@@ -1,6 +1,6 @@
 from src.cyint_slack import talk_to_slack, error_to_slack
 from src.cyint_jira import authenticate_jira, get_prepared_opportunities
-from src.cyint_openai import gpt_parse_summary, initialize_openai, gpt_generate_coverletter, gpt_choose_best_title, gpt_rewrite_pitch, gpt_rewrite_work_history, gpt_evaluate_work_history_entry
+from src.cyint_openai import gpt_parse_summary, initialize_openai, gpt_generate_coverletter, gpt_choose_best_title, gpt_rewrite_pitch, gpt_rewrite_work_history, optimized_gpt_call
 from src.cyint_resume import get_resume_data, build_resume
 from time import sleep
 import os
@@ -27,25 +27,16 @@ def generate_resumes_for_opportunities():
             
             job_info = f"{opportunity.fields.summary}: {summary}"
             
-            cover_letter = gpt_generate_coverletter(job_info, experience)
+            cover_letter = optimized_gpt_call(gpt_generate_coverletter, summary=job_info, experience=experience)
             cover_letter = re.sub(r'\[.*?\]\n?', '', cover_letter)
-            title = gpt_choose_best_title(job_info, titles, headline)
+            title = gpt_choose_best_title(job_info, titles)
             new_headline = f"Expert {title}"
-            pitch = gpt_rewrite_pitch(summary, pitch)
+            pitch = optimized_gpt_call(gpt_rewrite_pitch, summary=summary, pitch=pitch)
 
             for work in work_history:
                 skills = str(work['skills'])
                 results = str(work['results'])
-                valid = False
-                max_tries = 3
-                while not valid:
-                    if max_tries < 1:
-                        raise Exception('Could not generate a valid work history entry in three tries.')                    
-                    new_description = gpt_rewrite_work_history(job_info, skills, results, work['company'], work['title'])
-                    valid = bool(gpt_evaluate_work_history_entry(new_description))
-                    max_tries -= 1
-                    sleep(1)
-
+                new_description = optimized_gpt_call(gpt_rewrite_work_history, summary=job_info, skills=skills, results=results, company=work['company'], position=work['title'])
                 work['description'] = new_description
 
             filename = f"Daniel Fredriksen - {title}"
