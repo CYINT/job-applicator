@@ -140,11 +140,13 @@ def extract_description_from_url(driver, url):
 def extract_hiring_manager(driver):
 
     try:
-        driver.implicity_wait(2)
-        return driver.find_elements(
+        driver.implicitly_wait(2)
+        manager =  driver.find_elements(
             by=By.CSS_SELECTOR, 
             value = '.jobs-poster__name'
-        )[0].text
-    except:
+        )
+        return manager[0].text
+    except Exception as e:
+        print(e)
         return "Unknown"
             
