@@ -8,3 +8,7 @@ def talk_to_slack(message):
     payload = { "text" : message }
     return requests.post(webhook, json.dumps(payload))
 
+def error_to_slack(message):
+    webhook = os.environ["MARKETING_ERROR_SLACK_WEBHOOK"]
+    payload = { "text" : message }
+    return requests.post(webhook, json.dumps(payload))

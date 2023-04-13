@@ -17,7 +17,7 @@ def initialize_webdriver():
     service = Service(executable_path=path_to_driver)
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument(f"user-data-dir={data_directory}") 
-    chrome_options.add_argument(f"window-size=2000,500")
+    chrome_options.add_argument(f"window-size=2000,1000")
     driver = webdriver.Chrome(service=service, options=chrome_options) 
     cookies = []
     if os.path.exists("cookies.pkl"):
@@ -46,7 +46,7 @@ def sign_in(driver):
     password_field.send_keys(password)    
     action = ActionChains(driver)  
     action.move_to_element(password_field)
-    button = driver.find_element(by=By.CLASS_NAME, value="sign-in-form__submit-button")
+    button = driver.find_element(by=By.CLASS_NAME, value="sign-in-form__submit-btn--full-width")
     button.click()
 
 def job_search(driver, alert):
@@ -94,13 +94,12 @@ def extract_jobs_from_page(driver, job_counter = 0):
         var elements = document.querySelectorAll('.job-card-container');
         elements[elements.length-1].scrollIntoView();
     """)
-        sleep(1)
         job_list = driver.find_elements(by=By.CSS_SELECTOR, value=".job-card-container")
         
     jobs = [parse_job_data(job) for job in job_list]
     jobs = [job for job in jobs if job['title'] != None]
 
-    sleep(5)
+    sleep(2)
     return jobs
 
 
@@ -110,7 +109,10 @@ def parse_job_data(job):
         title_container = job.find_element(by=By.CSS_SELECTOR, value=".job-card-list__title")
         title = title_container.text
         path = title_container.get_attribute('href')
-        company = job.find_element(by=By.CSS_SELECTOR, value=".job-card-container__company-name").text
+        try:
+            company = job.find_element(by=By.CSS_SELECTOR, value=".job-card-container__primary-description").text
+        except:
+            company = None
         return {
             "job_id": job_id,
             "title": title,
@@ -125,3 +127,26 @@ def parse_job_data(job):
             "company": None,
             "exception": e
         }
+
+def extract_description_from_url(driver, url):
+    driver.get(url)
+    driver.implicitly_wait(10)
+    button = driver.find_element(by=By.XPATH, value="//span[text()='See more']")
+    button.click()
+    sleep(2)
+    description_container = driver.find_element(by=By.CSS_SELECTOR, value=".jobs-description-content__text")
+    return description_container.text
+
+def extract_hiring_manager(driver):
+
+    try:
+        driver.implicitly_wait(2)
+        manager =  driver.find_elements(
+            by=By.CSS_SELECTOR, 
+            value = '.jobs-poster__name'
+        )
+        return manager[0].text
+    except Exception as e:
+        print(e)
+        return "Unknown"
+            

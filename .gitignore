@@ -2,3 +2,5 @@
 .pytest_cache
 selenium
 __pycache__
+.docx
+node_modules

@@ -1,0 +1,34 @@
+service: resume
+frameworkVersion: '3'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: python3.8
+  timeout: 29
+  environment:
+    OPENAI_API_KEY: ${env.OPENAI_API_KEY}
+
+package:
+  patterns:
+    - '../../src/**'
+    - '!node_modules/**'
+    - '!README.md'
+
+functions:
+  build:
+    handler: handler.build
+    events:
+      - httpApi:
+          path: /build
+          method: post
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-python-requirements
+
+custom:
+  apigwBinary:
+    types:
+      - 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'

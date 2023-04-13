@@ -27,10 +27,27 @@ def create_opportunities(jira, jobs, project):
             "description": f"{job['company']} - {job['title']}",
             "issuetype": { "name": "Opportunity" },
             "customfield_10157": job['title'],
-            "customfield_10158": job['path'],
+            "customfield_10158":  job['path'][:job["path"].index('?')],
             "customfield_10159": 0
         } for job in jobs[batch*50:50*(batch+1)]] 
         
         issues += jira.create_issues(field_list=issue_list)
         sleep(1)
+    return issues
+
+def get_new_opportunities(jira, start_at=0):
+    issues = jira.search_issues(
+        "project='MAR' AND issueType='Opportunity' and status='New Task'",
+        startAt=start_at
+    )
+
+    return issues
+
+
+def get_prepared_opportunities(jira, start_at=0):
+    issues = jira.search_issues(
+        "project='MAR' AND issueType='Opportunity' and status='Eligible for Application'",
+        startAt=start_at
+    )
+
     return issues
