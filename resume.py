@@ -1,6 +1,6 @@
 from src.cyint_slack import talk_to_slack, error_to_slack
 from src.cyint_jira import authenticate_jira, get_prepared_opportunities
-from src.cyint_openai import gpt_parse_summary, gpt_parse_salary, initialize_openai, gpt_generate_coverletter, gpt_choose_best_title, gpt_rewrite_pitch, gpt_rewrite_work_history, gpt_evaluate_work_history_entry
+from src.cyint_openai import gpt_parse_summary, initialize_openai, gpt_generate_coverletter, gpt_choose_best_title, gpt_rewrite_pitch, gpt_rewrite_work_history, gpt_evaluate_work_history_entry
 from src.cyint_resume import get_resume_data, build_resume
 from time import sleep
 import os
@@ -32,7 +32,7 @@ def generate_resumes_for_opportunities():
             title = gpt_choose_best_title(job_info, titles, headline)
             new_headline = f"Expert {title}"
             pitch = gpt_rewrite_pitch(summary, pitch)
-            
+
             for work in work_history:
                 skills = str(work['skills'])
                 results = str(work['results'])

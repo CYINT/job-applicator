@@ -26,7 +26,7 @@ def chat_completion(messages, max_tokens = 1000, temperature = 0.7, top_p=1, fre
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty
             )
-
+            sleep(1)
             return result
         except RateLimitError as ex:
             sleep(60)
@@ -57,25 +57,6 @@ def gpt_generate_coverletter(summary, experience):
 def gpt_parse_skills():
     return []
 
-def gpt_parse_salary(summary):
-    prompt = 'Extract the minimum and maximum salary range from a summary of the job description. If the minimum or maximum salary range is not present, substitute "Uknown". If the range is listed as an hourly rate, calculate the yearly salary based on 40 hour weeks and return the total.'
-
-
-    messages = [{"role":"system", "content": prompt}, 
-        {"role": "user", "content": 'The job is for a remote Principal Software Engineer for a ground travel search startup in North America. The salary range for the position is $160,000 - $200,000 per year. The company is looking for a technical leader to develop their technical roadmap and ensure that their teams are building the best platform for their travel marketplace. The candidate should have experience in driving architecture discussions, collaborating with stakeholders, and driving large transformation projects. The company values diversity and is fully remote, and the candidate should be dri,ven, solutions-focused, and passionate about their work. Qualifications are not mentioned in the job description.'},
-        {"role": "assistant", "content": "160000;20000"},
-        {"role": "user", "content": "We are looking for an experienced machine learning engineer."},
-        {"role": "assistant", "content": "unknown;unknown"},
-        {"role": "user", "content": "If you are a front end engineer please apply! The maximum salary range for this position is $150k"},
-        {"role": "assistant", "content": "unknown;150000"},
-        {"role": "user", "content": "Seeking Data Engineer. Hourly rate $75 - $100 an hour."},
-        {"role": "assistant", "content": "156000;208000"},
-        {"role": "user", "content": summary}
-    ]
-
-    result = chat_completion(messages, max_tokens=30, temperature=0)    
-    return result.choices[0].message.content 
-
 def gpt_choose_best_title(job_info, titles, headline):
 
     prompt = f'Select one best match from the following: {". ".join(titles)}.'
@@ -92,24 +73,24 @@ def gpt_choose_best_title(job_info, titles, headline):
 
 def gpt_rewrite_pitch(job_info, pitch):
 
-    prompt = f'Rewrite the following resume summary pitch to be a better fit for the user provided job description: {pitch}.'
+    prompt = f'Rewrite the following resume summary for the job description as a single paragraph: {pitch}.'
 
     messages = [
         {"role":"system", "content": prompt}, 
-        {"role": "user", "content": job_info[:3000]}
+        {"role": "user", "content": f"Job Description: {job_info[:3000]}."}
     ]
 
-    result = chat_completion(messages, max_tokens=250)    
+    result = chat_completion(messages, max_tokens=500)    
     return result.choices[0].message.content 
 
 
 def gpt_rewrite_work_history(job_info, skills, results, company, position):
 
-    prompt = f'Skills: {skills}\nResults: {results}\nCompany: {company}\nTitle: {position}\n.Use the information above to write a resume experience entry and how each relates to the job posting. Response must fit in 200 tokens.'
+    prompt = f'Skills: {skills}\nResults: {results}\nCompany: {company}\nTitle: {position}\n.Use the information above to write a resume experience entry and how each relates to the job posting. Use only a single paragraph without bullets.'
 
     messages = [
         {"role":"system", "content": prompt}, 
-        {"role": "user", "content": f"My job posting is: {job_info[:3000]}"}
+        {"role": "user", "content": f"My job posting is: {job_info[:3000]}."}
     ]
 
     result = chat_completion(messages, max_tokens=250)    
